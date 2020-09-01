@@ -20,7 +20,9 @@ import urllib.request
 import datetime
 import json
 import socket
+
 import sqlutil
+
 from io import BytesIO
 import gzip
  
@@ -49,8 +51,7 @@ if __name__ == '__main__':
     httpproxy_handler = urllib.request.ProxyHandler(proxy)
     opener = urllib.request.build_opener(httpproxy_handler)
     res = opener.open(Request("https://www.baidu.com/",headers=headers))
-    print("test end")#测试一下网络
-    #f = open('test.txt', 'w')
+    print("test end")  #测试一下网络
     
     pageindex=1
     socket.setdefaulttimeout(120)
@@ -68,7 +69,6 @@ if __name__ == '__main__':
                     opener = urllib.request.build_opener(httpproxy_handler)
                     res = opener.open(req)
                     testflag=True
-                    #print(res.code)
                     if res.code==200:
                         break
                 except Exception as e:
@@ -82,7 +82,6 @@ if __name__ == '__main__':
             buff = BytesIO(response)
             f = gzip.GzipFile(fileobj=buff)
             htmls = f.read().decode('utf-8')
-            #htmls=response.decode('utf-8')
             results=json.loads(htmls)
 
             for item in results['items']:
@@ -94,6 +93,6 @@ if __name__ == '__main__':
                     score=item['score']
                     question_id=item['question_id']
                     title=item['title']
-                    sqlutil.sqlutil.addaQuestionRecord(owner_id,owner_reputation,view_count,answer_count,score,question_id,title)
+                    sqlutil.addaQuestionRecord(owner_id,owner_reputation,view_count,answer_count,score,question_id,title)
             print("read a record",pageindex,"quota remain",results['quota_remaining'])#显示当前ip剩余次数
             pageindex+=1
